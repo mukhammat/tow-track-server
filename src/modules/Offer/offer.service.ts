@@ -42,6 +42,23 @@ export class OfferService implements IOfferService {
     return offer;
   }
 
+  public async getPendingOffersByOrderId(orderId: string) {
+    const offersByOrderId = await this.db.query.offers.findMany({
+      where: eq(offers.order_id, orderId) && eq(offers.status, 'pending'),
+    });
+
+    if (!offersByOrderId.length) {
+      throw new NotFoundException('Offer');
+    }
+
+    return offersByOrderId;
+  }
+
+  public async cancelOffer(offerId: string) {
+    const offer = await this.updateOfferStatus(offerId, 'rejected');
+    return offer;
+  }
+
   private async updateOfferStatus(offerId: string, status: UpdateStatusDto): Promise<GetOfferDto> {
     return this.db.transaction(async (tx) => {
       const offer = await tx.query.offers.findFirst({
@@ -67,22 +84,5 @@ export class OfferService implements IOfferService {
 
       return update[0];
     });
-  }
-
-  public async getPendingOffersByOrderId(orderId: string) {
-    const offersByOrderId = await this.db.query.offers.findMany({
-      where: eq(offers.order_id, orderId) && eq(offers.status, 'pending'),
-    });
-
-    if (!offersByOrderId.length) {
-      throw new NotFoundException('Offer');
-    }
-
-    return offersByOrderId;
-  }
-
-  public async cancelOffer(offerId: string) {
-    const offer = await this.updateOfferStatus(offerId, 'rejected');
-    return offer;
   }
 }
