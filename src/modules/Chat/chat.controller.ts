@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { IChatService } from '.';
+import { ControllerMethod } from '@dto';
 
 export interface IChatController {
-  sendMessage(req: Request, res: Response): Promise<void>;
-  getMessages(req: Request, res: Response): Promise<void>;
+  sendMessage: ControllerMethod;
+  getMessages: ControllerMethod;
 }
 
 export class ChatController {

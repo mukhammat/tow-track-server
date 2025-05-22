@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { IOfferService } from '.';
+import { ControllerMethod } from '@dto';
 
 export interface IOfferController {
-  acceptOfferThenOrder(req: Request, res: Response): Promise<void>;
-  createOffer(req: Request, res: Response): Promise<void>;
-  getOffersByOrderId(req: Request, res: Response): Promise<void>;
-  cancelOffer(req: Request, res: Response): Promise<void>;
+  acceptOfferThenOrder: ControllerMethod;
+  createOffer: ControllerMethod;
+  getOffersByOrderId: ControllerMethod;
+  cancelOffer: ControllerMethod;
 }
 
 export class OfferController implements IOfferController {

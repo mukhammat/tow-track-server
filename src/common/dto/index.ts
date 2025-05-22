@@ -9,4 +9,7 @@ export type Context = {
   next?: NextFunction;
 };
 
-export type ControllerMethod = (req: Request, res: Response) => Promise<void>;
+export type ControllerMethod<TReq = Request, TRes = Response> = (
+  req: TReq,
+  res: TRes,
+) => Promise<void>;

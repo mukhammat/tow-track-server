@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { IOrderService } from '.';
+import { ControllerMethod } from '@src/common/dto';
 
 export interface IOrderController {
-  createOrder(req: Request, res: Response): Promise<void>;
-  getAll(req: Request, res: Response): Promise<void>;
-  cancelOrder(req: Request, res: Response): Promise<void>;
-  completeOrder(req: Request, res: Response): Promise<void>;
-  getById(req: Request, res: Response): Promise<void>;
+  createOrder: ControllerMethod;
+  getAll: ControllerMethod;
+  cancelOrder: ControllerMethod;
+  completeOrder: ControllerMethod;
+  getById: ControllerMethod;
 }
 
 export class OrderController implements IOrderController {

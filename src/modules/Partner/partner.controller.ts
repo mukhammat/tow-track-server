@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import { PartnerService } from '.';
+import { ControllerMethod } from '@dto';
 
 export interface IPartnerController {
-  updatePhone(req: Request, res: Response): Promise<void>;
+  updatePhone: ControllerMethod;
 }
 
 export class PartnerController {

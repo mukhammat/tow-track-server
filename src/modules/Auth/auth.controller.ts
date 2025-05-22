@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import type { AuthService } from '.';
+import { ControllerMethod } from '@dto';
 
 export interface IAuthController {
-  register(req: Request, res: Response): Promise<void>;
-  login(req: Request, res: Response): Promise<void>;
+  register: ControllerMethod;
+  login: ControllerMethod;
 }
 
 export class AuthController implements IAuthController {
