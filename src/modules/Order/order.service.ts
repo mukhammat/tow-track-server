@@ -4,14 +4,15 @@ import { CreateOrderDto, GetOrderDto, UpdateOrderDto } from '.';
 import { DrizzleClient, orders, TransactionType } from '@database';
 
 export interface IOrderService {
-  getAll(): Promise<unknown>;
+  getAll(): Promise<GetOrderDto[]>;
   createOrder(data: CreateOrderDto): Promise<string>;
+  getById(order_id: string): Promise<GetOrderDto>;
   cancelOrder(order_id: string): Promise<string>;
   completeOrder(order_id: string): Promise<string>;
-  getById(order_id: string): Promise<GetOrderDto>;
 }
 
-const ORDER = 'Order',
+const 
+  ORDER = 'Order',
   SEARCH = 'searching',
   NEGOTIAT = 'negotiating',
   WAIT = 'waiting',
@@ -38,36 +39,6 @@ export class OrderService implements IOrderService {
   public async createOrder(data: CreateOrderDto) {
     console.log('Creating order in the database...');
     return (await this.db.insert(orders).values(data).returning())[0].id;
-  }
-
-  public async assignPartnerToOrder(order_id: string, partner_id: string) {
-    console.log('Assign partner to order...');
-    return this.db.transaction(async (tx) => {
-      const order = await this.getById(order_id, tx);
-
-      if (![NEGOTIAT, SEARCH].includes(order.status)) {
-        throw new NotAvailableException(`Order with id - ${order.id}  not available`);
-      }
-
-      const partnerOrders = await this.getManyByPartnerId(partner_id, tx);
-
-      const busyOrder = partnerOrders.find((o) => o.status === WAIT || o.status === LOAD);
-
-      if (busyOrder) {
-        throw new NotAvailableException(`Order with id ${partner_id} already has active order`);
-      }
-
-      const updatedOrder = await this.updateOrder({
-        order_id,
-        data: {
-          partner_id,
-          status: NEGOTIAT,
-        },
-        tx,
-      });
-
-      return updatedOrder;
-    });
   }
 
   public async getById(order_id: string, tx?: TransactionType) {
@@ -122,7 +93,37 @@ export class OrderService implements IOrderService {
     });
   }
 
-  private async getManyByPartnerId(partner_id: string, tx?: TransactionType) {
+  public async assignPartnerToOrder(order_id: string, partner_id: string): Promise<GetOrderDto> {
+    console.log('Assign partner to order...');
+    return this.db.transaction(async (tx) => {
+      const order = await this.getById(order_id, tx);
+
+      if (![NEGOTIAT, SEARCH].includes(order.status)) {
+        throw new NotAvailableException(`Order with id - ${order.id}  not available`);
+      }
+
+      const partnerOrders = await this.getManyByPartnerId(partner_id, tx);
+
+      const busyOrder = partnerOrders.find((o) => o.status === WAIT || o.status === LOAD);
+
+      if (busyOrder) {
+        throw new NotAvailableException(`Order with id ${partner_id} already has active order`);
+      }
+
+      const updatedOrder = await this.updateOrder({
+        order_id,
+        data: {
+          partner_id,
+          status: NEGOTIAT,
+        },
+        tx,
+      });
+
+      return updatedOrder;
+    });
+  }
+
+  private async getManyByPartnerId(partner_id: string, tx?: TransactionType): Promise<GetOrderDto[]> {
     let db = tx ? tx : this.db;
     const results = await db.query.orders.findMany({
       where: eq(orders.partner_id, partner_id),
@@ -135,7 +136,7 @@ export class OrderService implements IOrderService {
     return results;
   }
 
-  private async updateOrder({ order_id, data, tx }: UpdateOrderDto) {
+  private async updateOrder({ order_id, data, tx }: UpdateOrderDto): Promise<GetOrderDto> {
     let db = tx ? tx : this.db;
 
     console.log('Update order...');

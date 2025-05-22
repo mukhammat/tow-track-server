@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { IOrderService } from '.';
-import { Context } from '@dto';
 
 export interface IOrderController {
   createOrder(req: Request, res: Response): Promise<void>;
