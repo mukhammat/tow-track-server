@@ -18,10 +18,9 @@ export class ChatRouter implements IChatRouter {
     return asyncWrapper(this.orderController[str].bind(this.orderController));
   }
 
-
-    private routers() {
-        this.router
-        .post("/send", this.bindAsyncHandler("sendMessage"))
-        .get("/all/:chatId", validate("params", UUIDSchema), this.bindAsyncHandler("getMessages"));
-    }
+  private routers() {
+    this.router
+      .post('/send', this.bindAsyncHandler('sendMessage'))
+      .get('/all/:chatId', validate('params', UUIDSchema), this.bindAsyncHandler('getMessages'));
+  }
 }

@@ -10,11 +10,11 @@ export const routers = (db: DrizzleClient): Router => {
   const router = Router();
 
   router
-  .use('/auth', createAuth(db))
-  .use('/partner', createPartner(db))
-  .use('/order', createOrder(db))
-  .use('/offer', createOffer(db))
-  .use('/message', createChat(db))
+    .use('/auth', createAuth(db))
+    .use('/partner', createPartner(db))
+    .use('/order', createOrder(db))
+    .use('/offer', createOffer(db))
+    .use('/message', createChat(db));
 
   return router;
 };

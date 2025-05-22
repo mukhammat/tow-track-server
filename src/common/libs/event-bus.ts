@@ -13,7 +13,7 @@ class SimpleEventBus {
   }
 
   off(event: string, handler: EventHandler) {
-    this.listeners[event] = (this.listeners[event] || []).filter(h => h !== handler);
+    this.listeners[event] = (this.listeners[event] || []).filter((h) => h !== handler);
   }
 }
 

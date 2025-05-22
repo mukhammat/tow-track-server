@@ -1,9 +1,9 @@
-import { HttpException } from "."
+import { HttpException } from '.';
 
 interface NotAvailableOpts {
-    entity?: string;
-    id?: number | string;
-    message?: string;
+  entity?: string;
+  id?: number | string;
+  message?: string;
 }
 
 export class NotAvailableException extends HttpException {

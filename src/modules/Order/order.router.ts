@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import { validate, asyncWrapper } from '@middleware';
-import { CreateOrderDtoSchema, IOrderController } from '.';
+import { CreateOrderSchema, IOrderController } from '.';
 import { UUIDSchema } from '@dto';
-
 
 interface IOrderRouter {
   readonly router: Router;
@@ -21,19 +20,18 @@ export class OrderRouter implements IOrderRouter {
 
   private routers() {
     this.router
-    .post("/create", 
-        validate("body", CreateOrderDtoSchema),
-        this.bindAsyncHandler("createOrder"))
-    .get("/all", 
-        this.bindAsyncHandler("getAll"))
-    .patch("/cancel/:orderId", 
-        validate("params", UUIDSchema),
-        this.bindAsyncHandler("cancelOrder"))
-    .patch("/complete/:orderId",
-        validate("params", UUIDSchema),
-        this.bindAsyncHandler("completeOrder"))
-    .get("/get/:orderId",
-        validate("params", UUIDSchema),
-        this.bindAsyncHandler("getById"))
+      .post('/create', validate('body', CreateOrderSchema), this.bindAsyncHandler('createOrder'))
+      .get('/all', this.bindAsyncHandler('getAll'))
+      .patch(
+        '/cancel/:orderId',
+        validate('params', UUIDSchema),
+        this.bindAsyncHandler('cancelOrder'),
+      )
+      .patch(
+        '/complete/:orderId',
+        validate('params', UUIDSchema),
+        this.bindAsyncHandler('completeOrder'),
+      )
+      .get('/get/:orderId', validate('params', UUIDSchema), this.bindAsyncHandler('getById'));
   }
 }

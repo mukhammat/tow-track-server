@@ -14,7 +14,7 @@ export const RegisterSchema = z.object({
   last_name: z.string().min(3).max(100),
   iin: z.string().min(10).max(15),
   phone: z.string().min(10).max(15),
-  telegram_id: z.number(),//.min(5).max(20),
+  telegram_id: z.number(), //.min(5).max(20),
   password: PasswordSchema,
   vehicle_info: z.string(),
 });
