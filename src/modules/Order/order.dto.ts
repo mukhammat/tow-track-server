@@ -33,8 +33,7 @@ export const CreateOrderSchema = z
     to: z.string().min(1, 'куда обязателен'),
     intercity: z
       .boolean()
-      .default(false)
-      .transform((val) => (val ? 1 : 0)), // превратим boolean → 0|1 для БД
+      .default(false),
     location_url: z.string().url().optional(),
     phone: z.string().min(5, 'некорректный телефон'),
     client_telegram_id: z.number(),
