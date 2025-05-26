@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 import { CreateOfferDto, GetOfferDto, OfferStatus, UpdateOfferDto, UpdateStatusDto } from '.';
 import { BadRequestException, NotFoundException } from '@exceptions';
 import { eventBus } from '@libs';
-import { DrizzleClient, offers } from '@database';
+import { DrizzleClient, offers, orders } from '@database';
 
 export interface IOfferService {
   createOffer(data: CreateOfferDto): Promise<string>;
@@ -16,7 +16,31 @@ export class OfferService implements IOfferService {
   constructor(private db: DrizzleClient) {}
 
   public async createOffer(data: CreateOfferDto) {
-    return (await this.db.insert(offers).values(data).returning())[0].id;
+    return this.db.transaction(async (tx)=> {
+      const order = await tx.query.orders.findFirst({
+        where: eq(orders.id, data.order_id),
+        columns:{
+          id: true,
+          client_telegram_id: true
+        },
+      });
+
+      if(!order) {
+        throw new NotFoundException(`Order with id: ${data.order_id} not found`);
+      }
+
+      const res = (await tx.insert(offers).values(data).returning())[0];
+
+      console.log("Create event offer.created");
+      eventBus.emit('offer.created', {
+        price: res.price,
+        order_id: res.order_id,
+        partner_id: res.partner_id,
+        created_at: res.created_at,
+        chat_id: order.client_telegram_id
+      });
+      return res.id;
+    })
   }
 
   public async getAll() {
