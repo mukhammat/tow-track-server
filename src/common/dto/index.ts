@@ -4,13 +4,13 @@ import { Request, Response, NextFunction } from 'express';
 export const UUIDSchema = z.string().uuid('Некорректный UUID');
 
 export const createUUIDSchema = (param: string) => {
-  return z.object({ [param]: UUIDSchema })
-}
+  return z.object({ [param]: UUIDSchema });
+};
 
 export const ParamsSchemas = {
-  orderId: createUUIDSchema("orderId"),
-  offerId: createUUIDSchema("offerId"),
-  chatId: createUUIDSchema("chatId"),
+  orderId: createUUIDSchema('orderId'),
+  offerId: createUUIDSchema('offerId'),
+  chatId: createUUIDSchema('chatId'),
 } as const;
 
 export type Context = {

@@ -11,8 +11,7 @@ export interface IOrderService {
   completeOrder(order_id: string): Promise<string>;
 }
 
-const 
-  ORDER = 'Order',
+const ORDER = 'Order',
   SEARCH = 'searching',
   NEGOTIAT = 'negotiating',
   WAIT = 'waiting',
@@ -123,7 +122,10 @@ export class OrderService implements IOrderService {
     });
   }
 
-  private async getManyByPartnerId(partner_id: string, tx?: TransactionType): Promise<GetOrderDto[]> {
+  private async getManyByPartnerId(
+    partner_id: string,
+    tx?: TransactionType,
+  ): Promise<GetOrderDto[]> {
     let db = tx ? tx : this.db;
     const results = await db.query.orders.findMany({
       where: eq(orders.partner_id, partner_id),

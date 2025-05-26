@@ -32,6 +32,10 @@ export class OrderRouter implements IOrderRouter {
         validate('params', ParamsSchemas.orderId),
         this.bindAsyncHandler('completeOrder'),
       )
-      .get('/get/:orderId', validate('params', ParamsSchemas.orderId), this.bindAsyncHandler('getById'));
+      .get(
+        '/get/:orderId',
+        validate('params', ParamsSchemas.orderId),
+        this.bindAsyncHandler('getById'),
+      );
   }
 }

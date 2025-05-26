@@ -31,9 +31,7 @@ export const CreateOrderSchema = z
   .object({
     from: z.string().min(1, 'откуда обязателен'),
     to: z.string().min(1, 'куда обязателен'),
-    intercity: z
-      .boolean()
-      .default(false),
+    intercity: z.boolean().default(false),
     location_url: z.string().url().optional(),
     phone: z.string().min(5, 'некорректный телефон'),
     client_telegram_id: z.number(),
