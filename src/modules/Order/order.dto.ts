@@ -1,10 +1,10 @@
 import { InferResultType, TransactionType } from '@database';
+import { UUIDSchema } from '@dto';
 
 export type GetOrderDto = InferResultType<'orders'>;
 
 export type OrderStatus = GetOrderDto['status'];
 
-type data = Partial<GetOrderDto>;
 export type UpdateOrderDto = {
   order_id: string;
   data: Partial<GetOrderDto>;

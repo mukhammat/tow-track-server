@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { validate, asyncWrapper } from '@middleware';
 import { IChatController } from '.';
-import { UUIDSchema } from '@dto';
+import { ParamsSchemas } from '@dto';
 
 interface IChatRouter {
   readonly router: Router;
@@ -21,6 +21,6 @@ export class ChatRouter implements IChatRouter {
   private routers() {
     this.router
       .post('/send', this.bindAsyncHandler('sendMessage'))
-      .get('/all/:chatId', validate('params', UUIDSchema), this.bindAsyncHandler('getMessages'));
+      .get('/all/:chatId', validate('params', ParamsSchemas.chatId), this.bindAsyncHandler('getMessages'));
   }
 }

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { validate, asyncWrapper } from '@middleware';
 import { CreateOrderSchema, IOrderController } from '.';
-import { UUIDSchema } from '@dto';
+import { ParamsSchemas } from '@dto';
 
 interface IOrderRouter {
   readonly router: Router;
@@ -24,14 +24,14 @@ export class OrderRouter implements IOrderRouter {
       .get('/all', this.bindAsyncHandler('getAll'))
       .patch(
         '/cancel/:orderId',
-        validate('params', UUIDSchema),
+        validate('params', ParamsSchemas.orderId),
         this.bindAsyncHandler('cancelOrder'),
       )
       .patch(
         '/complete/:orderId',
-        validate('params', UUIDSchema),
+        validate('params', ParamsSchemas.orderId),
         this.bindAsyncHandler('completeOrder'),
       )
-      .get('/get/:orderId', validate('params', UUIDSchema), this.bindAsyncHandler('getById'));
+      .get('/get/:orderId', validate('params', ParamsSchemas.orderId), this.bindAsyncHandler('getById'));
   }
 }
