@@ -41,7 +41,7 @@ export class OrderService implements IOrderService {
   }
 
   public async getById(order_id: string, tx?: TransactionType) {
-    let db = tx ? tx : this.db;
+    const db = tx ? tx : this.db;
 
     const order = await db.query.orders.findFirst({
       where: eq(orders.id, order_id),
@@ -126,7 +126,7 @@ export class OrderService implements IOrderService {
     partner_id: string,
     tx?: TransactionType,
   ): Promise<GetOrderDto[]> {
-    let db = tx ? tx : this.db;
+    const db = tx ? tx : this.db;
     const results = await db.query.orders.findMany({
       where: eq(orders.partner_id, partner_id),
     });
@@ -139,7 +139,7 @@ export class OrderService implements IOrderService {
   }
 
   private async updateOrder({ order_id, data, tx }: UpdateOrderDto): Promise<GetOrderDto> {
-    let db = tx ? tx : this.db;
+    const db = tx ? tx : this.db;
 
     console.log('Update order...');
     const order = await db.update(orders).set(data).where(eq(orders.id, order_id)).returning();

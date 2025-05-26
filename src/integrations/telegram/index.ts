@@ -1,1 +1,1 @@
-export * from "./telegram.client"
+export * from './telegram.client';
