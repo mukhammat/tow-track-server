@@ -4,7 +4,7 @@ import { DrizzleClient, messages, offers, chats } from '@database';
 import { CreateMessageDto, GetMesssageType } from '.';
 
 export interface IChatService {
-  createChat(offer_id: string): Promise<string>;
+  createChat(offerId: string): Promise<string>;
   sendMessage(data: CreateMessageDto): Promise<GetMesssageType>;
   deleteMessage(messageId: string): Promise<string>;
   updateMessage(messageId: string, message: string): Promise<string>;
@@ -33,7 +33,7 @@ export class ChatService implements IChatService {
     const chat = await this.db
       .insert(chats)
       .values({
-        offer_id: offer.id,
+        offerId: offer.id,
       })
       .returning();
     console.log('Chat is created');
@@ -64,7 +64,7 @@ export class ChatService implements IChatService {
 
   async getMessages(chatId: string) {
     const result = await this.db.query.messages.findMany({
-      where: eq(messages.chat_id, chatId),
+      where: eq(messages.chatId, chatId),
     });
 
     if (result.length === 0) {

@@ -11,8 +11,8 @@ export type UpdateStatusDto = Exclude<OfferStatus, 'pending'>;
 export type UpdateOfferDto = Partial<GetOfferDto>;
 
 export const CreateOfferSchema = z.object({
-  order_id: UUIDSchema,
-  partner_id: UUIDSchema,
+  orderId: UUIDSchema,
+  partnerId: UUIDSchema,
   price: z.number().positive(),
 });
 

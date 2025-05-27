@@ -14,9 +14,9 @@ export class ChatController {
     const { chatId, message, isClient } = req.body;
 
     const result = await this.chatService.sendMessage({
-      chat_id: chatId,
+      chatId: chatId,
       message,
-      is_client: isClient,
+      isClient: isClient,
     });
 
     res.status(201).send({ data: { result }, message: 'Message sent!' });

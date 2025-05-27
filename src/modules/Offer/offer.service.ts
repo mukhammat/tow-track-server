@@ -18,15 +18,15 @@ export class OfferService implements IOfferService {
   public async createOffer(data: CreateOfferDto) {
     return this.db.transaction(async (tx) => {
       const order = await tx.query.orders.findFirst({
-        where: eq(orders.id, data.order_id),
+        where: eq(orders.id, data.orderId),
         columns: {
           id: true,
-          client_telegram_id: true,
+          clientTelegramId: true,
         },
       });
 
       if (!order) {
-        throw new NotFoundException(`Order with id: ${data.order_id} not found`);
+        throw new NotFoundException(`Order with id: ${data.orderId} not found`);
       }
 
       const res = (await tx.insert(offers).values(data).returning())[0];
@@ -34,11 +34,11 @@ export class OfferService implements IOfferService {
       console.log('Create event offer.created');
       eventBus.emit('offer.created', {
         price: res.price,
-        order_id: res.order_id,
-        partner_id: res.partner_id,
-        created_at: res.created_at,
-        offer_id: res.id,
-        chat_id: order.client_telegram_id,
+        orderId: res.orderId,
+        partnerId: res.partnerId,
+        createdAt: res.createdAt,
+        offerId: res.id,
+        chatId: order.clientTelegramId,
       });
       return res.id;
     });
@@ -62,8 +62,8 @@ export class OfferService implements IOfferService {
 
       eventBus.emit('offer.accepted', {
         offerId,
-        orderId: offer.order_id,
-        partnerId: offer.partner_id,
+        orderId: offer.orderId,
+        partnerId: offer.partnerId,
       });
       return offer;
     } catch (error) {
@@ -73,7 +73,7 @@ export class OfferService implements IOfferService {
 
   public async getPendingOffersByOrderId(orderId: string) {
     const offersByOrderId = await this.db.query.offers.findMany({
-      where: eq(offers.order_id, orderId) && eq(offers.status, 'pending'),
+      where: eq(offers.orderId, orderId) && eq(offers.status, 'pending'),
     });
 
     if (!offersByOrderId.length) {

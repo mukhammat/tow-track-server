@@ -3,10 +3,10 @@ import { eventBus } from '@libs';
 
 type Data = {
   price: number;
-  order_id: string;
-  partner_id: string;
-  created_at: Date;
-  chat_id: number;
+  orderId: string;
+  partnerId: string;
+  createdAt: Date;
+  chatId: number;
 };
 
 async function notifyNewOffer(data: Data) {

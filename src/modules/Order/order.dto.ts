@@ -6,14 +6,14 @@ export type GetOrderDto = InferResultType<'orders'>;
 export type OrderStatus = GetOrderDto['status'];
 
 export type UpdateOrderDto = {
-  order_id: string;
+  orderId: string;
   data: Partial<GetOrderDto>;
   tx?: TransactionType;
 };
 
 export type CreateOrderDto = Omit<
   GetOrderDto,
-  'id' | 'created_at' | 'partner_id' | 'price' | 'status' | 'updated_at'
+  'id' | 'createdAt' | 'partnerId' | 'price' | 'status' | 'updatedAt'
 >;
 
 import { z } from 'zod';
@@ -32,11 +32,11 @@ export const CreateOrderSchema = z
     from: z.string().min(1, 'откуда обязателен'),
     to: z.string().min(1, 'куда обязателен'),
     intercity: z.boolean().default(false),
-    location_url: z.string().url().optional(),
+    locationUrl: z.string().url().optional(),
     phone: z.string().min(5, 'некорректный телефон'),
-    client_telegram_id: z.number(),
+    clientTelegramId: z.number(),
     vehicleInfo: z.string().min(3, 'укажи информацию о транспорте'),
-    partner_id: z.number().int().nullable().optional(),
+    partnerId: z.number().int().nullable().optional(),
     price: z.number().nonnegative().nullable().optional(),
     status: OrderStatusEnum.optional().default('searching'), // по умолчанию - searching
   })
