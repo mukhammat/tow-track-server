@@ -48,7 +48,7 @@ export class OrderService implements IOrderService {
     });
 
     if (!order) {
-      throw new NotFoundException(ORDER);
+      throw new NotFoundException(`Order with partner_id: ${order_id} not found`);
     }
 
     return order;
@@ -132,7 +132,7 @@ export class OrderService implements IOrderService {
     });
 
     if (!results.length) {
-      throw new NotFoundException(ORDER);
+      throw new NotFoundException(`Order with partner_id: ${partner_id} not found`); 
     }
 
     return results;
