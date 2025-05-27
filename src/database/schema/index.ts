@@ -4,15 +4,15 @@ import * as t from 'drizzle-orm/pg-core';
 // Партнёры
 export const partners = table('partners', {
   id: t.uuid().primaryKey().notNull().defaultRandom(),
-  first_name: t.varchar('first_name').notNull(),
-  last_name: t.varchar('last_name').notNull(),
+  firstName: t.varchar('first_name').notNull(),
+  lastName: t.varchar('last_name').notNull(),
   iin: t.varchar('iin').notNull().unique(),
   phone: t.varchar('phone').notNull().unique(),
-  telegram_id: t.integer('telegram_id').notNull().unique(),
+  telegramId: t.integer('telegram_id').notNull().unique(),
   hash: t.varchar('hash').notNull(),
-  vehicle_info: t.text('vehicle_info').notNull(),
-  created_at: t.timestamp('created_at').defaultNow(),
-  updated_at: t.timestamp('updated_at'),
+  vehicleInfo: t.text('vehicle_info').notNull(),
+  createdAt: t.timestamp('created_at').defaultNow(),
+  updatedAt: t.timestamp('updated_at'),
 });
 
 export const OrderStatusEnum = pgEnum('order_status_enum', [
@@ -32,7 +32,7 @@ export const orders = table('orders', {
   location_url: t.varchar('location_url'),
   phone: t.varchar('phone'),
   client_telegram_id: t.integer('client_telegram_id'),
-  vehicle_info: t.text('vehicle_info').notNull(),
+  vehicleInfo: t.text('vehicle_info').notNull(),
   partner_id: t.uuid('partner_id').references(() => partners.id, { onDelete: 'cascade' }),
   price: t.real('price'),
   status: OrderStatusEnum().notNull().default('searching'),

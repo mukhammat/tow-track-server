@@ -17,8 +17,8 @@ export class AuthController implements IAuthController {
   }
 
   public async login(req: Request, res: Response) {
-    const { telegram_id, password } = req.body;
-    const token = await this.authService.login(telegram_id, password);
+    const { telegramId, password } = req.body;
+    const token = await this.authService.login(telegramId, password);
     res.status(200).send({ data: { token }, message: 'Logged in' });
   }
 }

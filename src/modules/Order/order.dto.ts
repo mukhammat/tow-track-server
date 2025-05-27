@@ -35,7 +35,7 @@ export const CreateOrderSchema = z
     location_url: z.string().url().optional(),
     phone: z.string().min(5, 'некорректный телефон'),
     client_telegram_id: z.number(),
-    vehicle_info: z.string().min(3, 'укажи информацию о транспорте'),
+    vehicleInfo: z.string().min(3, 'укажи информацию о транспорте'),
     partner_id: z.number().int().nullable().optional(),
     price: z.number().nonnegative().nullable().optional(),
     status: OrderStatusEnum.optional().default('searching'), // по умолчанию - searching

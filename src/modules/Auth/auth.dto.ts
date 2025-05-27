@@ -10,18 +10,18 @@ const PasswordSchema = z
   });
 
 export const RegisterSchema = z.object({
-  first_name: z.string().min(3).max(100),
-  last_name: z.string().min(3).max(100),
+  firstName: z.string().min(3).max(100),
+  lastName: z.string().min(3).max(100),
   iin: z.string().min(10).max(15),
   phone: z.string().min(10).max(15),
-  telegram_id: z.number(), //.min(5).max(20),
+  telegramId: z.number(), //.min(5).max(20),
   password: PasswordSchema,
-  vehicle_info: z.string(),
+  vehicleInfo: z.string(),
 });
 
 export type RegisterDto = z.infer<typeof RegisterSchema>;
 
 export const LoginSchema = z.object({
-  telegram_id: z.number().min(5).max(20),
+  telegramId: z.number().min(5).max(20),
   password: PasswordSchema,
 });

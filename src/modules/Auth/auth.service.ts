@@ -8,7 +8,7 @@ import { BadRequestException, NotFoundException } from '@exceptions';
 
 export interface IAuthService {
   register(data: RegisterDto): Promise<string>;
-  login(telegram_id: number, password: string): Promise<string>;
+  login(telegramId: number, password: string): Promise<string>;
 }
 
 export class AuthService implements IAuthService {
@@ -38,13 +38,13 @@ export class AuthService implements IAuthService {
     const partner = await this.db
       .insert(partners)
       .values({ hash, ...data })
-      .returning({ telegram_id: partners.telegram_id });
-    return this.generateJwt({ telegram_id: partner[0].telegram_id });
+      .returning({ telegramId: partners.telegramId });
+    return this.generateJwt({ telegramId: partner[0].telegramId });
   }
 
-  public async login(telegram_id: number, password: string) {
+  public async login(telegramId: number, password: string) {
     const partner = await this.db.query.partners.findFirst({
-      where: eq(partners.telegram_id, telegram_id),
+      where: eq(partners.telegramId, telegramId),
     });
 
     if (!partner) {
@@ -57,6 +57,6 @@ export class AuthService implements IAuthService {
       throw new BadRequestException('Invalid password');
     }
 
-    return this.generateJwt({ telegram_id: partner.telegram_id });
+    return this.generateJwt({ telegramId: partner.telegramId });
   }
 }
