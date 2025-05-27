@@ -93,49 +93,50 @@ export class OrderService implements IOrderService {
   }
 
   public async assignPartnerToOrder(order_id: string, partner_id: string): Promise<GetOrderDto> {
-    console.log('Assign partner to order...');
-    return this.db.transaction(async (tx) => {
-      const order = await this.getById(order_id, tx);
+    try {
+      console.log('Assign partner to order...');
+      return this.db.transaction(async (tx) => {
+        const order = await this.getById(order_id, tx);
 
-      if (![NEGOTIAT, SEARCH].includes(order.status)) {
-        throw new NotAvailableException(`Order with id - ${order.id}  not available`);
-      }
+        if (![NEGOTIAT, SEARCH].includes(order.status)) {
+          throw new NotAvailableException(`Order with id - ${order.id}  not available`);
+        }
 
-      const partnerOrders = await this.getManyByPartnerId(partner_id, tx);
+        const partnerOrders = await this.getManyByPartnerId(partner_id, tx);
 
-      const busyOrder = partnerOrders.find((o) => o.status === WAIT || o.status === LOAD);
+        if(partnerOrders) {
+          const busyOrder = partnerOrders.find((o) => o.status === WAIT || o.status === LOAD);
+          if (busyOrder) {
+            throw new NotAvailableException(`Order with id ${partner_id} already has active order`);
+          }
+        }
 
-      if (busyOrder) {
-        throw new NotAvailableException(`Order with id ${partner_id} already has active order`);
-      }
+        const updatedOrder = await this.updateOrder({
+          order_id,
+          data: {
+            partner_id,
+            status: NEGOTIAT,
+          },
+          tx,
+        });
 
-      const updatedOrder = await this.updateOrder({
-        order_id,
-        data: {
-          partner_id,
-          status: NEGOTIAT,
-        },
-        tx,
+        return updatedOrder;
       });
-
-      return updatedOrder;
-    });
+    } catch (error) {
+      throw new Error(`Error: ${error}`);
+    }
   }
 
   private async getManyByPartnerId(
     partner_id: string,
     tx?: TransactionType,
-  ): Promise<GetOrderDto[]> {
+  ): Promise<GetOrderDto[] | false> {
     const db = tx ? tx : this.db;
     const results = await db.query.orders.findMany({
       where: eq(orders.partner_id, partner_id),
     });
 
-    if (!results.length) {
-      throw new NotFoundException(`Order with partner_id: ${partner_id} not found`); 
-    }
-
-    return results;
+    return results.length ? results : false;
   }
 
   private async updateOrder({ order_id, data, tx }: UpdateOrderDto): Promise<GetOrderDto> {

@@ -37,6 +37,7 @@ export class OfferService implements IOfferService {
         order_id: res.order_id,
         partner_id: res.partner_id,
         created_at: res.created_at,
+        offer_id: res.id,
         chat_id: order.client_telegram_id,
       });
       return res.id;
@@ -56,14 +57,18 @@ export class OfferService implements IOfferService {
   }
 
   public async acceptOffer(offerId: string) {
-    const offer = await this.updateOfferStatus(offerId, 'accepted');
+    try {
+      const offer = await this.updateOfferStatus(offerId, 'accepted');
 
-    eventBus.emit('offer.accepted', {
-      offerId,
-      orderId: offer.order_id,
-      partnerId: offer.partner_id,
-    });
-    return offer;
+      eventBus.emit('offer.accepted', {
+        offerId,
+        orderId: offer.order_id,
+        partnerId: offer.partner_id,
+      });
+      return offer;
+    } catch (error) {
+      throw new Error(`Error: ${error}`);
+    }
   }
 
   public async getPendingOffersByOrderId(orderId: string) {
