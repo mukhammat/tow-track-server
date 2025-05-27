@@ -8,7 +8,6 @@ lerna-debug.log*
 .pnpm-debug.log*
 
 migrations/
-infrastructure/
 
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
