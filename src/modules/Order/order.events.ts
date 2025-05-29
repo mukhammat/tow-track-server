@@ -1,9 +1,12 @@
-import { eventBus } from '@libs';
 import { OrderService } from './order.service';
+import { DrizzleClient } from '@database';
+import { createProcessor } from '@outbox';
 
-// order.events.ts
-export function registerOrderEvents(orderService: OrderService) {
-  eventBus.on('offer.accepted', async ({ orderId, partnerId }) => {
-    await orderService.assignPartnerToOrder(orderId, partnerId); // если метод приватный
-  });
+export function registerOrderEvents(orderService: OrderService, db: DrizzleClient) {
+    return createProcessor(db, {
+      'offer.accepted': async (data)=> {
+        console.log('🔥 Event offer.created received');
+        await orderService.assignPartnerToOrder(data.orderId, data.partnerId)
+      }
+    }).start();
 }

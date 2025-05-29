@@ -1,8 +1,8 @@
-import { eq } from 'drizzle-orm';
+import { eq, ExtractTablesWithRelations } from 'drizzle-orm';
 import { CreateOfferDto, GetOfferDto, OfferStatus, UpdateOfferDto, UpdateStatusDto } from '.';
 import { BadRequestException, NotFoundException } from '@exceptions';
-import { eventBus } from '@libs';
-import { DrizzleClient, offers, orders } from '@database';
+import { DrizzleClient, offers, orders, TransactionType } from '@database';
+import { OutboxService } from "@outbox";
 
 export interface IOfferService {
   createOffer(data: CreateOfferDto): Promise<string>;
@@ -31,15 +31,16 @@ export class OfferService implements IOfferService {
 
       const res = (await tx.insert(offers).values(data).returning())[0];
 
-      console.log('Create event offer.created');
-      eventBus.emit('offer.created', {
+      await OutboxService.saveEventTx('offer.created', res.id, {
         price: res.price,
         orderId: res.orderId,
         partnerId: res.partnerId,
         createdAt: res.createdAt,
         offerId: res.id,
         chatId: order.clientTelegramId,
-      });
+      }, tx);
+      
+      console.log('Create event offer.created');
       return res.id;
     });
   }
@@ -59,11 +60,12 @@ export class OfferService implements IOfferService {
   public async acceptOffer(offerId: string) {
     try {
       const offer = await this.updateOfferStatus(offerId, 'accepted');
-
-      eventBus.emit('offer.accepted', {
-        offerId,
-        orderId: offer.orderId,
-        partnerId: offer.partnerId,
+      this.db.transaction(async (tx)=> {
+        await OutboxService.saveEventTx('offer.accepted', offer.id, {
+          offerId,
+          orderId: offer.orderId,
+          partnerId: offer.partnerId,
+        }, tx);
       });
       return offer;
     } catch (error) {

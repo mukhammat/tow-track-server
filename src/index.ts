@@ -2,15 +2,12 @@ import 'dotenv/config';
 import { Express } from 'express';
 import app from './app';
 import { db } from '@database';
-import { registerOfferEvents } from '@integrations/telegram';
 
 const PORT = process.env.PORT || 3000;
 
 (async (app: Express) => {
   try {
     await db.$client.connect();
-
-    registerOfferEvents();
 
     app.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`);

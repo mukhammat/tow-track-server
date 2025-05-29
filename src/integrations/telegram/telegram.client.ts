@@ -1,5 +1,6 @@
 // src/events/offer-events.ts
-import { eventBus } from '@libs';
+import { createProcessor } from "@outbox";
+import db from '@src/database';
 
 type Data = {
   price: number;
@@ -19,12 +20,10 @@ async function notifyNewOffer(data: Data) {
 }
 
 export function registerOfferEvents() {
-  eventBus.on('offer.created', async (data: Data) => {
-    try {
+    return createProcessor(db, {
+    'offer.created': async (data)=> {
       console.log('🔥 Event offer.created received');
       await notifyNewOffer(data);
-    } catch (error) {
-      console.error('❌ Ошибка в notifyNewOffer', error);
     }
-  });
+  }).start();
 }

@@ -4,12 +4,15 @@ import cors from 'cors';
 import { db } from '@database';
 import { errorHanler } from '@middleware';
 import { routers } from './routers';
+import { registerOfferEvents } from '@integrations/telegram';
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 app.use('/api', routers(db));
+
+registerOfferEvents();
 
 app.get('/check', (_req, res) => {
   res.status(200).json({ message: 'Check...' });
