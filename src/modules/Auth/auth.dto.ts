@@ -22,6 +22,6 @@ export const RegisterSchema = z.object({
 export type RegisterDto = z.infer<typeof RegisterSchema>;
 
 export const LoginSchema = z.object({
-  telegramId: z.number().min(5).max(20),
+  telegramId: z.number().min(5),
   password: PasswordSchema,
 });

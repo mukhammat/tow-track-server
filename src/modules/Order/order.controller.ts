@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { IOrderService } from '.';
 import { ControllerMethod } from '@src/common/dto';
 
@@ -15,6 +15,7 @@ export class OrderController implements IOrderController {
   public async createOrder(req: Request, res: Response) {
     const data = await req.body;
     const orderId = await this.orderService.createOrder(data);
+    
     res.status(201).send({ data: { orderId }, message: 'Order is created' });
   }
 
