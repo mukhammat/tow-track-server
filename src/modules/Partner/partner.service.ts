@@ -1,8 +1,10 @@
 import { DrizzleClient, partners } from '@database';
 import { eq } from 'drizzle-orm';
+import { GetAllActivePartnersDto } from '.';
 
 export interface IPartnerService {
   updatePhone(partnerId: string, phone: string): Promise<string>;
+  getAllActivePartners(): Promise<GetAllActivePartnersDto[]>
 }
 
 export class PartnerService implements IPartnerService {
@@ -20,5 +22,13 @@ export class PartnerService implements IPartnerService {
       });
 
     return partner[0].id;
+  }
+
+  public async getAllActivePartners() {
+    return this.db.query.partners.findMany({
+      columns: {
+        telegramId: true
+      }
+    });
   }
 }
